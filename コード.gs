@@ -458,7 +458,6 @@ function getMastercardSubscriptions() {
   var todayDay = today.getDate();
   
   var subscriptions = [
-    { name: 'Spotify', amount: 1080, day: 2 },
     { name: 'ボイシー', amount: 1000, day: 2 },
     { name: 'APPLE COM BILL', amount: 450, day: 2 },
     { name: 'リンクスメイト', amount: 165, day: 10 },
@@ -914,7 +913,7 @@ function getRakutenMastercardDetails() {
   const targetMonth = Utilities.formatDate(nextMonth, 'Asia/Tokyo', 'yyyy/MM');
 
   // サブスク除外リスト（getMastercardSubscriptionsと同じキーワード）
-  const SUBSCRIPTIONS = ['SPOTIFY', 'ﾎﾞｲｼ-', 'ﾘﾝｸｽﾒｲﾄ', 'CLAUDE.AI', 'GOOGLE PLAY', 'PAYPAL', 'APPLE'];
+  const SUBSCRIPTIONS = ['ﾎﾞｲｼ-', 'ﾘﾝｸｽﾒｲﾄ', 'CLAUDE.AI', 'GOOGLE PLAY', 'PAYPAL', 'APPLE'];
 
   const threads = GmailApp.search(
   'from:rakuten-card.co.jp "カード利用お知らせメール(確定版)" newer_than:60d in:anywhere',0, 500);
