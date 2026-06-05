@@ -536,18 +536,14 @@ function getRakutenCardMonthlyTotal() {
   if (totals.thisMonth.Mastercard > 0 || totals.thisMonth.Visa > 0) {
     lines.push('【' + thisMonth + '引き落とし分】');
     if (totals.thisMonth.Mastercard > 0) {
-      var remaining = MASTERCARD_BUDGET - totals.thisMonth.Mastercard;
-      var remainingStr = remaining >= 0 ? '　残り' + remaining.toLocaleString() + '円' : '　超過' + Math.abs(remaining).toLocaleString() + '円！';
-      lines.push('・Mastercard（楽天銀行）：' + totals.thisMonth.Mastercard.toLocaleString() + '円' + remainingStr);
+      lines.push('・Mastercard（楽天銀行）：' + totals.thisMonth.Mastercard.toLocaleString() + '円');
     }
     if (totals.thisMonth.Visa > 0) lines.push('・Visa（静岡銀行）：' + totals.thisMonth.Visa.toLocaleString() + '円');
   }
   if (totals.nextMonth.Mastercard > 0 || totals.nextMonth.Visa > 0) {
     lines.push('【' + nextMonth + '引き落とし分】');
     if (totals.nextMonth.Mastercard > 0) {
-      var remaining5 = MASTERCARD_BUDGET - totals.nextMonth.Mastercard;
-      var remainingStr5 = remaining5 >= 0 ? '　残り' + remaining5.toLocaleString() + '円' : '　超過' + Math.abs(remaining5).toLocaleString() + '円！';
-      lines.push('・Mastercard（楽天銀行）：' + totals.nextMonth.Mastercard.toLocaleString() + '円' + remainingStr5);
+      lines.push('・Mastercard（楽天銀行）：' + totals.nextMonth.Mastercard.toLocaleString() + '円');
     }
     if (totals.nextMonth.Visa > 0) lines.push('・Visa（静岡銀行）：' + totals.nextMonth.Visa.toLocaleString() + '円');
   }
