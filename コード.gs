@@ -53,7 +53,8 @@ function dailyDigest() {
     { q: 'from:schoo.jp newer_than:1d -from:s.iguchi@gmail.com', label: 'Schoo' },
     { q: '("不正" OR "不審" OR "ログインがありました" OR "身に覚えのない" OR "セキュリティ") newer_than:1d -from:s.iguchi@gmail.com', label: '不審ログイン・セキュリティ' },
     { q: 'category:promotions ("セール" OR "SALE" OR "タイムセール" OR "クーポン") newer_than:1d -from:s.iguchi@gmail.com', label: 'セール・クーポン' },
-    { q: 'is:important newer_than:1d -has:starred -(from:rakuten.co.jp OR from:amazon.co.jp OR from:apple.com OR from:playstation.com OR from:nintendo.com OR from:falcom.co.jp OR from:schoo.jp) -from:s.iguchi@gmail.com', label: 'その他重要メール' }
+    { q: 'is:important newer_than:1d -has:starred -(from:rakuten.co.jp OR from:amazon.co.jp OR from:apple.com OR from:playstation.com OR from:nintendo.com OR from:falcom.co.jp OR from:schoo.jp) -from:s.iguchi@gmail.com', label: 'その他重要メール' },
+    { q: 'from:send03.anpiap.alsok.co.jp newer_than:1d', label: 'ALSOK安否確認' }
    ];
   var sections = [];
   // 重要メールをタスクに追加
