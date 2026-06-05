@@ -765,7 +765,7 @@ function getScheduleSection() {
     
     if (taskLists.items) {
       taskLists.items.forEach(function(list) {
-        var tasks = Tasks.Tasks.list(list.id, { showCompleted: false, dueMax: tomorrow2.toISOString() });
+        var tasks = Tasks.Tasks.list(list.id, { showCompleted: false });
         if (tasks.items) {
           tasks.items.forEach(function(task) {
             if (!task.due) return;
@@ -776,8 +776,10 @@ function getScheduleSection() {
             tomorrow3.setDate(today.getDate() + 1);
             var tomorrowStr2 = Utilities.formatDate(tomorrow3, 'Asia/Tokyo', 'MM/dd');
             
-            if (dueDateStr === todayStr2) todayTasks.push('・' + task.title);
-            else if (dueDateStr === tomorrowStr2) tomorrowTasks.push('・' + task.title);
+            var oneWeekLater = new Date(today);
+            oneWeekLater.setDate(today.getDate() + 7);
+            if (dueDate <= today) todayTasks.push('・' + task.title);
+            else if (dueDate <= oneWeekLater) tomorrowTasks.push('・' + task.title + '（' + dueDateStr + '）');
           });
         }
       });
@@ -786,7 +788,7 @@ function getScheduleSection() {
     if (todayTasks.length > 0 || tomorrowTasks.length > 0) {
       var taskLines = [];
       if (todayTasks.length > 0) taskLines.push('今日：\n' + todayTasks.join('\n'));
-      if (tomorrowTasks.length > 0) taskLines.push('明日：\n' + tomorrowTasks.join('\n'));
+      if (tomorrowTasks.length > 0) taskLines.push('今後7日：\n' + tomorrowTasks.join('\n'));
       lines.push('[Tasks]\n' + taskLines.join('\n'));
     }
   } catch(e) {
