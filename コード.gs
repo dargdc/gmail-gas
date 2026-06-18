@@ -91,6 +91,9 @@ function dailyDigest() {
 // ゴミ箱メールのサマリー追加（Gemini要約に含めず直接追記）
   var trashSection = getTrashSummary();
 
+// Grok AIまとめ追加
+  var grokSection = getGrokSection();
+
   if (sections.length === 0) {
     console.log('対象メールなし。ダイジェスト送信スキップ。');
     return;
@@ -127,9 +130,25 @@ function dailyDigest() {
     + summary 
     + (rakutenCardSection ? '\n\n' + rakutenCardSection : '')
     + (trashSection ? '\n\n' + trashSection : '') 
+    + (grokSection ? '\n\n' + grokSection : '')
     + '\n\n---\n※このメールはGASが自動送信しました。';
 GmailApp.sendEmail(recipient, 'Gmail日次ダイジェスト ' + dateStr, emailBody);
   console.log('ダイジェスト送信完了');
+}
+
+// ===== Grok AIまとめ =====
+function getGrokSection() {
+  var threads = GmailApp.search('from:noreply@x.ai newer_than:1d', 0, 5);
+  if (threads.length === 0) return null;
+
+  var entries = [];
+  threads.forEach(function(thread) {
+    var msg = thread.getMessages()[0];
+    var body = msg.getPlainBody();
+    entries.push(body);
+  });
+
+  return '【Grok AIまとめ】\n' + entries.join('\n\n---\n\n');
 }
 
 // ===== Gemini API呼び出し =====
@@ -894,6 +913,10 @@ function testSections() {
   console.log('trashSection開始');
   var trashSection = getTrashSummary();
   console.log('trashSection完了');
+
+  console.log('grokSection開始');
+  var grokSection = getGrokSection();
+  console.log('grokSection完了');
 }
 
 function testSectionsCount() {
@@ -1218,5 +1241,15 @@ function debugCardMailCount() {
   threads.forEach(function(thread) {
     var msg = thread.getMessages()[0];
     console.log(Utilities.formatDate(msg.getDate(), 'Asia/Tokyo', 'yyyy/MM/dd') + ' ' + msg.getSubject());
+  });
+}
+
+function debugGrokSection() {
+  var threads = GmailApp.search('from:noreply@x.ai newer_than:1d', 0, 5);
+  threads.forEach(function(thread) {
+    var msg = thread.getMessages()[0];
+    var body = msg.getPlainBody();
+    console.log('文字数: ' + body.length);
+    console.log(body);
   });
 }
