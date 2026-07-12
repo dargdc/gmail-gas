@@ -1223,6 +1223,15 @@ function getRakutenBankDebitTotal() {
   return { total: total, items: items };
 }
 
+// ===== 自動既読 =====
+function autoMarkAsRead() {
+  var threads = GmailApp.search('is:unread -subject:"Gmail日次ダイジェスト"', 0, 500);
+  if (threads.length > 0) {
+    GmailApp.markThreadsRead(threads);
+    console.log(threads.length + '件を既読にしました。');
+  }
+}
+
 function debugCardMailCount() {
   var threads = GmailApp.search(
     'from:rakuten-card.co.jp "カード利用お知らせメール(確定版)" in:anywhere',
