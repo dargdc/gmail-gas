@@ -33,7 +33,7 @@ function autoDeleteOldEmails() {
 }
 
 // ===== Gemini APIキー =====
-var GEMINI_API_KEY = 'AIzaSyD7fDgMA5regrWRBVhgGHgfE7Td3gOeIHM';
+var GEMINI_API_KEY = PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY');
 
 // ===== 日次ダイジェスト =====
 function dailyDigest() {
@@ -1252,4 +1252,24 @@ function debugGrokSection() {
     console.log('文字数: ' + body.length);
     console.log(body);
   });
+}
+
+function testGemini2() {
+  var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + GEMINI_API_KEY;
+  var payload = {
+    contents: [{ parts: [{ text: 'こんにちは' }] }]
+  };
+  var options = {
+    method: 'post',
+    contentType: 'application/json',
+    payload: JSON.stringify(payload),
+    muteHttpExceptions: true
+  };
+  var response = UrlFetchApp.fetch(url, options);
+  console.log(response.getContentText());
+}
+
+function checkApiKey() {
+  var key = PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY');
+  console.log('キー: ' + key);
 }
