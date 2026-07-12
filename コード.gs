@@ -164,8 +164,7 @@ function callGemini(prompt) {
     muteHttpExceptions: true
   };
 
-  // 最大5回リトライ
-  for (var i = 0; i < 5; i++) {
+  for (var i = 0; i < 3; i++) {
     var response = UrlFetchApp.fetch(url, options);
     var json = JSON.parse(response.getContentText());
     try {
@@ -173,24 +172,15 @@ function callGemini(prompt) {
       if (text) return text;
     } catch(e) {
       var code = json.error ? json.error.code : 0;
-      if ((code === 503 || code === 429) && i < 4) {
+      if ((code === 503 || code === 429) && i < 2) {
         console.log('Gemini混雑中。' + (i + 1) + '回目リトライ...');
-        Utilities.sleep(30000); // 30秒待つ
+        Utilities.sleep(60000);
       } else {
-        return null; // 失敗時はnullを返す
+        return null;
       }
     }
   }
   return null;
-}
-
-// ===== 自動既読 =====
-function autoMarkAsRead() {
-  var threads = GmailApp.search('is:unread -subject:"Gmail日次ダイジェスト"', 0, 500);
-  if (threads.length > 0) {
-    GmailApp.markThreadsRead(threads);
-    console.log(threads.length + '件を既読にしました。');
-  }
 }
 
 // ===== 期限メール管理 =====
@@ -199,7 +189,6 @@ function checkDeadlineMails() {
   var deadlinesJson = scriptProps.getProperty('deadlines');
   var deadlines = deadlinesJson ? JSON.parse(deadlinesJson) : {};
   
-  // 厳選した期限キーワードで検索
   var query = '("支払期限" OR "お支払い期限" OR "振込期限" OR "引き落とし日" OR "口座振替日" OR "申込締切" OR "お申し込み期限" OR "登録期限" OR "契約更新" OR "更新期限" OR "自動更新" OR "ポイント失効" OR "ポイント有効期限" OR "ポイント期限") newer_than:30d -has:starred -subject:"Gmail日次ダイジェスト" -subject:"ご注文ありがとう" -subject:"お買い上げありがとう" -subject:"注文明細" -subject:"ご購入ありがとう" -from:s.iguchi@gmail.com';
   var threads = GmailApp.search(query, 0, 20);
   
@@ -232,7 +221,8 @@ function checkDeadlineMails() {
             if (deadline < today) deadline.setFullYear(year + 1);
           }
           deadline.setHours(0, 0, 0, 0);
-          if (deadline >= today && deadline <= new Date(today.getTime() + 365 * 24 * 60 * 60 * 1000)) break;else deadline = null;
+          if (deadline >= today && deadline <= new Date(today.getTime() + 365 * 24 * 60 * 60 * 1000)) break;
+          else deadline = null;
         } catch(e) { deadline = null; }
       }
     }
@@ -595,7 +585,8 @@ function getRakutenCardMonthlyTotal() {
   // 総合予算計算
   var TOTAL_BUDGET = 14000;
   var allSubsTotal = subs.list.reduce(function(sum, s) { return sum + s.amount; }, 0);
-  var totalUsed = totals.thisMonth.Mastercard + debit.total;
+　var allSubsTotal = subs.list.reduce(function(sum, s) { return sum + s.amount; }, 0);
+  var totalUsed = totals.thisMonth.Mastercard + subs.remainingTotal + debit.total;
   var totalSpendable = TOTAL_BUDGET - totalUsed;
   var totalSpendableStr = totalSpendable >= 0 
     ? '\nあと' + totalSpendable.toLocaleString() + '円使えます（予算' + TOTAL_BUDGET.toLocaleString() + '円）'
