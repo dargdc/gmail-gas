@@ -291,7 +291,8 @@ function getTrashSummary() {
   var date = props.getProperty('lastDeletedDate');
   var today = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd');
 
-  if (!summary || date !== today) return null;
+  var yesterday = Utilities.formatDate(new Date(new Date().getTime() - 24*60*60*1000), 'Asia/Tokyo', 'yyyy/MM/dd');
+  if (!summary || (date !== today && date !== yesterday)) return null;
 
   // ログイン・認証を除外
   var lines = summary.split('\n').filter(function(line) {
@@ -1272,4 +1273,26 @@ function testGemini2() {
 function checkApiKey() {
   var key = PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY');
   console.log('キー: ' + key);
+}
+
+function testAutoDelete() {
+  var conditions = [
+    { query: 'category:promotions -"重要" -"ふるさと納税" -has:starred -category:primary older_than:1m', label: 'プロモーション（1ヶ月）' },
+    { query: '(from:rakuten.co.jp OR from:amazon.co.jp) ("注文内容ご確認" OR "発送" OR "注文" OR "お届け") -"重要" -"ふるさと納税" -has:starred -category:primary older_than:1m', label: '楽天/Amazon・注文関連（1ヶ月）' },
+  ];
+  
+  conditions.forEach(function(cond) {
+    var threads = GmailApp.search(cond.query, 0, 10);
+    console.log(cond.label + '：' + threads.length + '件');
+  });
+}
+
+function testTrashSummary2() {
+  var props = PropertiesService.getScriptProperties();
+  var date = props.getProperty('lastDeletedDate');
+  var today = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd');
+  
+  console.log('date: ' + date);
+  console.log('today: ' + today);
+  console.log('date一致：' + (date === today));
 }
